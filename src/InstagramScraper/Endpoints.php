@@ -14,6 +14,7 @@ class Endpoints
     const MEDIA_JSON_INFO = 'https://www.instagram.com/p/{code}/?__a=1';
     const MEDIA_JSON_BY_LOCATION_ID = 'https://www.instagram.com/explore/locations/{{facebookLocationId}}/?__a=1&max_id={{maxId}}';
     const MEDIA_JSON_BY_TAG = 'https://www.instagram.com/explore/tags/{tag}/?__a=1&max_id={max_id}';
+    const MEDIA_JSON_BY_TAG_2 = 'https://www.instagram.com/graphql/query/?query_hash=174a5243287c5f3a7de741089750ab3b&variables={"tag_name":"{tag}","first":{count},"after":"{after}"}';
     const GENERAL_SEARCH = 'https://www.instagram.com/web/search/topsearch/?query={query}&count={count}';
     const ACCOUNT_JSON_INFO_BY_ID = 'ig_user({userId}){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}';
     const COMMENTS_BEFORE_COMMENT_ID_BY_CODE = 'https://www.instagram.com/graphql/query/?query_hash=33ba35852cb50da46f5b5e889df7d159&variables={variables}';
@@ -103,6 +104,20 @@ class Endpoints
         $url = str_replace('{tag}', urlencode($tag), static::MEDIA_JSON_BY_TAG);
         return str_replace('{max_id}', urlencode($maxId), $url);
     }
+
+	public static function getQueryMediasJsonByTagLink($tag, $count = 30, $after = '')
+	{
+		$url = str_replace('{tag}', urlencode($tag), static::MEDIA_JSON_BY_TAG_2);
+		$url = str_replace('{count}', urlencode($count), $url);
+
+		if ($after === '') {
+			$url = str_replace(',"after":"{after}"', '', $url);
+		} else {
+			$url = str_replace('{after}', urlencode($after), $url);
+		}
+
+		return $url;
+	}
 
     public static function getGeneralSearchJsonLink($query, $count = 10)
     {
